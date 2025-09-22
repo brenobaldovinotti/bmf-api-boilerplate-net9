@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bmf.ApiBoilerplate.Domain</AssemblyName>
+		<RootNamespace>Bmf.ApiBoilerplate.Domain</RootNamespace>
+	</PropertyGroup>
+</Project>
