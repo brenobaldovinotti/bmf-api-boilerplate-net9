@@ -1,0 +1,16 @@
+name: Task
+description: Work item for tracking
+labels: [ "type/chore" ]
+body:
+  - type: textarea
+    id: task
+    attributes:
+      label: Task
+      description: What needs to be done?
+    validations:
+      required: true
+  - type: input
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: "CI passes; docs updated"

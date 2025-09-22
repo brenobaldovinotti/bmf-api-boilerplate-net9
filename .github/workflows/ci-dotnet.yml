@@ -1,0 +1,35 @@
+name: build
+on:
+  pull_request:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build (treat warnings as errors in CI)
+        run: dotnet build --no-restore -warnaserror
+
+      - name: Verify formatting
+        run: dotnet format --verify-no-changes
+
+      - name: Test with coverage
+        run: dotnet test --no-build --collect:"XPlat Code Coverage"
+
+      - name: Publish coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: |
+            **/TestResults/**/*.xml
+            **/TestResults/**/*.trx
