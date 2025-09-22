@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>Bmf.ApiBoilerplate.Infrastructure</AssemblyName>
+		<RootNamespace>Bmf.ApiBoilerplate.Infrastructure</RootNamespace>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Bmf.ApiBoilerplate.Domain\Bmf.ApiBoilerplate.Domain.csproj" />
+		<ProjectReference Include="..\Bmf.ApiBoilerplate.Application\Bmf.ApiBoilerplate.Application.csproj" />
+	</ItemGroup>
+</Project>
