@@ -1,34 +1,26 @@
-# Build
+# Build outputs
 bin/
 obj/
 out/
-TestResults/
-*.coverage
-*.coveragexml
-coverage*.xml
-*.trx
 
-# IDE
-.vscode/
-.vs/
-.idea/
-*.suo
+# User-specific
 *.user
-*.userosscache
-*.sln.docstates
+*.suo
+.vs/
+
+# IDEs
+.idea/
+*.sln.iml
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Logs
+# Logs & reports
 *.log
 logs/
+TestResults/
+coverage/
 
-# NuGet
+# Packages
 *.nupkg
-.nuget/packages/
-packages/
-
-# Tools
-tools/**/generated/
