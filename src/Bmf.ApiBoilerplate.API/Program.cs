@@ -1,6 +1,10 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+builder.Services.AddProblemDetails();
 
-app.MapGet("/", () => "Hello World!");
+WebApplication app = builder.Build();
+app.UseExceptionHandler();
+
+app.MapGet("/", () => Results.Ok(new { Service = "Bmf.ApiBoilerplate", Status = "OK" }));
+app.MapGet("/health", () => Results.Ok(new { Status = "Healthy" }));
 
 app.Run();

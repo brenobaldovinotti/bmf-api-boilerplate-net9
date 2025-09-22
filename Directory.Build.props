@@ -5,8 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AnalysisLevel>recommended</AnalysisLevel>
-    <!-- Keep build output deterministic across machines -->
+    <AnalysisLevel>9.0</AnalysisLevel>
     <ContinuousIntegrationBuild Condition="'$(CI)' != ''">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
@@ -15,7 +14,6 @@
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- Ensure .editorconfig is considered by StyleCop across the solution -->
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory).editorconfig" />
   </ItemGroup>
