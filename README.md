@@ -1,12 +1,11 @@
-# BMF Api Boilerplate
+# <PROJECT NAME>
 
-Production-ready .NET API boilerplate (Clean Architecture, light DDD, selective CQRS, Use-Case handlers).
+Short one-liner: what this project does.
 
 ## Tech Stack
-- .NET 9 / C# 12
-- NuGet Central Package Management
-- Nullable enabled, warnings as errors
-- Layered: **API → Application → Domain**; **Infrastructure → (Domain, Application)**
+- .NET (LTS), C#
+- Clean Architecture (Domain, Application, Infrastructure, API)
+- GitHub Actions, CodeQL, Dependabot
 
 ## Getting Started
 ```bash
@@ -18,7 +17,7 @@ dotnet test
 
 ## Run Locally
 ```bash
-cd src/Bmf.ApiBoilerplate.API
+cd src/<Your.Api>
 dotnet run
 ```
 
