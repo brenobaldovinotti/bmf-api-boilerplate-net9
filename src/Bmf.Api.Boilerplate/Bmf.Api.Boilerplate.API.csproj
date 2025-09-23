@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <AssemblyName>Bmf.Api.Boilerplate.API</AssemblyName>
+        <RootNamespace>Bmf.Api.Boilerplate.API</RootNamespace>
+        <InvariantGlobalization>true</InvariantGlobalization>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Bmf.Api.Boilerplate.Application\Bmf.Api.Boilerplate.Application.csproj" />
+    </ItemGroup>
+</Project>

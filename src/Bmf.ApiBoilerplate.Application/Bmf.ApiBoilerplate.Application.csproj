@@ -1,9 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<AssemblyName>Bmf.ApiBoilerplate.Application</AssemblyName>
-		<RootNamespace>Bmf.ApiBoilerplate.Application</RootNamespace>
-	</PropertyGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\Bmf.ApiBoilerplate.Domain\Bmf.ApiBoilerplate.Domain.csproj" />
-	</ItemGroup>
-</Project>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bmf.Api.Boilerplate.Domain.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Bmf.Api.Boilerplate.Domain.Tests.Time.ClockTests">
+            <summary>
+            Lightweight tests to ensure SystemClock behaves as expected and demonstrate IClock usage.
+            </summary>
+        </member>
+    </members>
+</doc>
