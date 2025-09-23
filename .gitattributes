@@ -1,7 +1,16 @@
-# Default: text with CRLF on checkout (Windows devs), LF in repo
-*           text=auto eol=crlf
+# Use Git's text normalization; per-file rules below choose EOLs
+*           text=auto
 
-# Force LF for cross-platform tooling / CI
+# Windows-friendly endings for .NET code
+*.sln       text eol=crlf
+*.cs        text eol=crlf
+*.csproj    text eol=crlf
+*.props     text eol=crlf
+*.targets   text eol=crlf
+*.ps1       text eol=crlf
+*.xml       text eol=crlf
+
+# LF for cross-platform tooling / CI
 *.sh        text eol=lf
 *.yml       text eol=lf
 *.yaml      text eol=lf
@@ -9,12 +18,3 @@
 *.json      text eol=lf
 *.editorconfig text eol=lf
 Dockerfile  text eol=lf
-
-# Force CRLF for Visual Studio / MSBuild files
-*.sln       text eol=crlf
-*.cs        text eol=crlf
-*.csproj    text eol=crlf
-*.props     text eol=crlf
-*.targets   text eol=crlf
-*.ps1       text eol=crlf
-*.xml		text eol=crlf
