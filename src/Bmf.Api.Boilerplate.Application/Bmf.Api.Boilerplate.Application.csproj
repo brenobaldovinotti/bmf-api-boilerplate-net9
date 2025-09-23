@@ -4,6 +4,10 @@
         <RootNamespace>Bmf.Api.Boilerplate.Application</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
+      <PackageReference Include="FluentValidation" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\Bmf.Api.Boilerplate.Domain\Bmf.Api.Boilerplate.Domain.csproj" />
     </ItemGroup>
 </Project>
