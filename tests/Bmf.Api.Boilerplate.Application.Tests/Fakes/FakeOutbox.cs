@@ -5,11 +5,11 @@ namespace Bmf.Api.Boilerplate.Application.Tests.Fakes;
 
 public sealed class FakeOutbox : IOutbox
 {
-    public List<IDomainEvent> Stored { get; } = [];
+    public List<IDomainEvent> Enqueued { get; } = [];
 
-    public Task EnqueueAsync(IEnumerable<IDomainEvent> eventsToStore, CancellationToken ct)
+    public Task EnqueueAsync(IEnumerable<IDomainEvent> domainEvents, CancellationToken ct)
     {
-        Stored.AddRange(eventsToStore);
+        Enqueued.AddRange(domainEvents);
         return Task.CompletedTask;
     }
 }

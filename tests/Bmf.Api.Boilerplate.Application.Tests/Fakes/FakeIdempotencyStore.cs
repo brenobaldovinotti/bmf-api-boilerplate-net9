@@ -1,26 +1,22 @@
 using Bmf.Api.Boilerplate.Application.Ports;
-using System.Collections.Concurrent;
 
 namespace Bmf.Api.Boilerplate.Application.Tests.Fakes;
 
 public sealed class FakeIdempotencyStore : IIdempotencyStore
 {
-    private readonly ConcurrentDictionary<Guid, byte> _seen;
+    private readonly HashSet<Guid> _seen = [];
 
-    public FakeIdempotencyStore()
-    {
-        _seen = new ConcurrentDictionary<Guid, byte>();
-    }
+    public List<string> Calls { get; } = [];
 
     public Task<bool> TryStartAsync(Guid requestId, CancellationToken ct)
     {
-        bool added = _seen.TryAdd(requestId, 1);
-        return Task.FromResult(added);
+        Calls.Add($"start:{requestId}");
+        return Task.FromResult(_seen.Add(requestId));
     }
 
     public Task CompleteAsync(Guid requestId, CancellationToken ct)
     {
-        _ = _seen.TryGetValue(requestId, out _);
+        Calls.Add($"complete:{requestId}");
         return Task.CompletedTask;
     }
 }
