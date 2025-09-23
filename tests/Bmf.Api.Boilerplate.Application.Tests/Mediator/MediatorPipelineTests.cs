@@ -19,11 +19,11 @@ public class MediatorPipelineTests
 
         // ports fakes
         _ = services.AddSingleton<IAuthorizationService, FakeAuthz>();
-        _ = services.AddSingleton<IIdempotencyStore, FakeIdem>();
-        _ = services.AddSingleton<IUnitOfWork, FakeUow>();
+        _ = services.AddSingleton<IIdempotencyStore, FakeIdempotencyStore>();
+        _ = services.AddSingleton<IUnitOfWork, FakeUnitOfWork>();
         _ = services.AddSingleton<IOutbox, FakeOutbox>();
         _ = services.AddSingleton(typeof(ILogging<>), typeof(FakeLogger<>));
-        _ = services.AddSingleton<ICorrelationContext, FakeCorr>();
+        _ = services.AddSingleton<ICorrelationContext, FakeCorrelationContext>();
 
         // app core
         _ = services.AddApplicationCore(Assembly.GetExecutingAssembly(), typeof(Echo).Assembly);
@@ -43,7 +43,7 @@ public class MediatorPipelineTests
         _ = response.Should().Be("ok");
 
         // Verify ports got touched
-        FakeUow? uow = sp.GetRequiredService<IUnitOfWork>() as FakeUow;
+        FakeUnitOfWork? uow = sp.GetRequiredService<IUnitOfWork>() as FakeUnitOfWork;
         FakeOutbox? outbox = sp.GetRequiredService<IOutbox>() as FakeOutbox;
         _ = uow!.Begin.Should().Be(1);
         _ = uow.Commit.Should().Be(1);
@@ -62,7 +62,7 @@ public class MediatorPipelineTests
         _ = await act.Should().ThrowAsync<FluentValidation.ValidationException>();
 
         // No UoW when validation fails
-        FakeUow? uow = sp.GetRequiredService<IUnitOfWork>() as FakeUow;
+        FakeUnitOfWork? uow = sp.GetRequiredService<IUnitOfWork>() as FakeUnitOfWork;
         _ = uow!.Begin.Should().Be(0);
         _ = uow.Commit.Should().Be(0);
         _ = uow.Rollback.Should().Be(0);
@@ -80,7 +80,7 @@ public class MediatorPipelineTests
 
         _ = await act.Should().ThrowAsync<UnauthorizedAccessException>();
 
-        FakeUow? uow = sp.GetRequiredService<IUnitOfWork>() as FakeUow;
+        FakeUnitOfWork? uow = sp.GetRequiredService<IUnitOfWork>() as FakeUnitOfWork;
         _ = uow!.Begin.Should().Be(0); // did not start tx
     }
 
@@ -88,7 +88,7 @@ public class MediatorPipelineTests
     public async Task Idempotency_blocks_duplicates_before_transaction()
     {
         ServiceProvider sp = BuildServices();
-        FakeIdem? idem = sp.GetRequiredService<IIdempotencyStore>() as FakeIdem;
+        FakeIdempotencyStore? idem = sp.GetRequiredService<IIdempotencyStore>() as FakeIdempotencyStore;
         idem!.PretendDuplicate = true;
 
         IMediator mediator = sp.GetRequiredService<IMediator>();
@@ -96,7 +96,7 @@ public class MediatorPipelineTests
 
         _ = await act.Should().ThrowAsync<InvalidOperationException>();
 
-        FakeUow? uow = sp.GetRequiredService<IUnitOfWork>() as FakeUow;
+        FakeUnitOfWork? uow = sp.GetRequiredService<IUnitOfWork>() as FakeUnitOfWork;
         _ = uow!.Begin.Should().Be(0);
     }
 
@@ -114,7 +114,7 @@ public class MediatorPipelineTests
         Func<Task<string>> act = async () => await mediator.Send(new Echo("boom"));
         _ = await act.Should().ThrowAsync<InvalidOperationException>();
 
-        FakeUow uow = sp.BuildServiceProvider().GetRequiredService<IUnitOfWork>() as FakeUow;
+        FakeUnitOfWork uow = sp.BuildServiceProvider().GetRequiredService<IUnitOfWork>() as FakeUnitOfWork;
         _ = uow!.Begin.Should().Be(1);
         _ = uow.Commit.Should().Be(0);
         _ = uow.Rollback.Should().Be(1);

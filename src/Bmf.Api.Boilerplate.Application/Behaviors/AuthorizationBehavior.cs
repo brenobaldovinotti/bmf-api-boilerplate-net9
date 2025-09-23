@@ -7,7 +7,6 @@ namespace Bmf.Api.Boilerplate.Application.Behaviors;
 public sealed class AuthorizationBehavior<TRequest, TResponse>(IAuthorizationService authorization, IUserContext user)
     : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
-
     /// <inheritdoc />
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct)
     {

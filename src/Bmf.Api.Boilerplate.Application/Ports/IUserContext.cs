@@ -8,7 +8,4 @@ public interface IUserContext
 
     /// <summary>True if the user is authenticated.</summary>
     bool IsAuthenticated { get; }
-
-    /// <summary>Users Roles</summary>
-    IReadOnlyCollection<string> Roles { get; }
 }

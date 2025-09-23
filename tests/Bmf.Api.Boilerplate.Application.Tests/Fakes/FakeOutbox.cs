@@ -1,9 +1,15 @@
 using Bmf.Api.Boilerplate.Application.Ports;
+using Bmf.Api.Boilerplate.Domain.Primitives;
 
 namespace Bmf.Api.Boilerplate.Application.Tests.Fakes;
 
 public sealed class FakeOutbox : IOutbox
 {
-    public int Flushes;
-    public Task FlushAsync(CancellationToken ct) { Flushes++; return Task.CompletedTask; }
+    public List<IDomainEvent> Stored { get; } = [];
+
+    public Task EnqueueAsync(IEnumerable<IDomainEvent> eventsToStore, CancellationToken ct)
+    {
+        Stored.AddRange(eventsToStore);
+        return Task.CompletedTask;
+    }
 }

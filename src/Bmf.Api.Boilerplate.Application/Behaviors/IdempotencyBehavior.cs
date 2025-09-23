@@ -4,8 +4,8 @@ using Bmf.Api.Boilerplate.Application.Ports;
 namespace Bmf.Api.Boilerplate.Application.Behaviors;
 
 /// <summary>Guarantees exactly-once semantics for idempotent requests.</summary>
-public sealed class IdempotencyBehavior<TRequest, TResponse>(IIdempotencyStore store) : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public sealed class IdempotencyBehavior<TRequest, TResponse>(IIdempotencyStore store)
+    : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
     /// <inheritdoc />
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct)
@@ -15,7 +15,6 @@ public sealed class IdempotencyBehavior<TRequest, TResponse>(IIdempotencyStore s
             bool started = await store.TryStartAsync(idempotent.RequestId, ct).ConfigureAwait(false);
             if (!started)
             {
-                // Already processed; in a real impl we could fetch and return cached result.
                 throw new InvalidOperationException("Duplicate idempotent request.");
             }
 
