@@ -4,5 +4,10 @@
         <name>Bmf.ApiBoilerplate.Domain.Tests</name>
     </assembly>
     <members>
+        <member name="T:Bmf.ApiBoilerplate.Domain.Tests.Time.ClockTests">
+            <summary>
+            Lightweight tests to ensure SystemClock behaves as expected and demonstrate IClock usage.
+            </summary>
+        </member>
     </members>
 </doc>

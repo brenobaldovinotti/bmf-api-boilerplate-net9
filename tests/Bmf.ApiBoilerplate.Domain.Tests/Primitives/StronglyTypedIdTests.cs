@@ -19,7 +19,7 @@ public class StronglyTypedIdTests
 
         Guid asGuid = a;
         _ = asGuid.Should().Be(g);
-        _ = a.ToString().Should().Be(g.ToString());
+        _ = a.Value.ToString().Should().Be(g.ToString());
     }
 
     [Fact]
