@@ -1,5 +1,3 @@
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace Bmf.ApiBoilerplate.Domain.Abstractions;
 
 /// <summary>
