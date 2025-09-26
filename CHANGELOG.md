@@ -95,5 +95,38 @@ All notable changes to this project will be documented here.
 - [x] Docs updated (not required for this step; XML doc standards already in repo)
 - [x] No breaking changes (internal refactor/rename only)
 
+## [Unreleased] - 2025-09-26
+### Summary
+<!-- What changed and why? -->
+- Implemented in-house mediator with proper exception bubbling (unwrap `TargetInvocationException`) so behaviors see the original exception type.
+- Finalized pipeline behaviors in required order: **Validation → Authorization → Idempotency → Transaction/Outbox → Logging/Tracing**.
+- Fixed `TransactionOutboxBehavior` flow to clear domain events after enqueue; tests now seed a dummy event to exercise `ClearDomainEvents()`.
+- DI module updated: registers mediator, open-generic pipeline behaviors, handlers (via Scrutor), and FluentValidation validators.
+- Tests updated:
+  - Resolve `ILogging<T>` from DI (rather than a locally constructed fake) to assert on actual messages.
+  - Behavior order test verifies idempotency start/complete, UoW `begin/save/collect/clear/commit`, and two info logs.
+- Ensured code aligns with `.editorconfig`: explicit types, braces, block statements, `_ =` when discarding returns, one class per file.
+- Minor docs/XML comments added where useful (no noise), and fake entities confined to test projects.
+
+### How was it tested?
+<!-- Steps / commands / screenshots -->
+1. Restore & build:
+   - `dotnet restore`
+   - `dotnet build -c Debug -warnaserror`
+2. Run tests from CLI:
+   - `dotnet test -c Debug`
+3. Verify Visual Studio Test Explorer:
+   - Update *xUnit.net runner* and *Test Adapter* to latest; confirm discovery and execution succeed.
+4. Behavior verification (key assertions):
+   - Authorization called once with expected policy.
+   - Idempotency store recorded `start:` and `complete:` for the same key.
+   - UoW call order: `begin → save → collect → clear → commit`.
+   - Logging captured two info messages (start and success).
+
+### Checklist
+- [ ] CI green
+- [ ] Docs updated (if needed)
+- [ ] No breaking changes (or documented)
+
 ## [0.1.0] - YYYY-MM-DD
 

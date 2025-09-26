@@ -4,5 +4,166 @@
         <name>Bmf.Api.Boilerplate.Application</name>
     </assembly>
     <members>
+        <member name="T:Bmf.Api.Boilerplate.Application.Abstractions.Messaging.ICommand`1">
+            <summary>Command request that changes state and returns a response.</summary>
+            <typeparam name="TResponse">Response type.</typeparam>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Abstractions.Messaging.IPipelineBehavior`2">
+            <summary>Intercepts request processing.</summary>
+            <typeparam name="TRequest">Request type.</typeparam>
+            <typeparam name="TResponse">Response type.</typeparam>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Abstractions.Messaging.IPipelineBehavior`2.Handle(`0,Bmf.Api.Boilerplate.Application.Abstractions.Messaging.RequestHandlerDelegate{`1},System.Threading.CancellationToken)">
+            <summary>Invoke the behavior.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Abstractions.Messaging.IQuery`1">
+            <summary>Query request producing a response.</summary>
+            <typeparam name="TResponse">Response type.</typeparam>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Abstractions.Messaging.IRequest`1">
+            <summary>Represents a request that produces a response.</summary>
+            <typeparam name="TResponse">Response type.</typeparam>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Abstractions.Messaging.IRequestHandler`2">
+            <summary>Handles a request and returns a response.</summary>
+            <typeparam name="TRequest">Request type.</typeparam>
+            <typeparam name="TResponse">Response type.</typeparam>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Abstractions.Messaging.IRequestHandler`2.Handle(`0,System.Threading.CancellationToken)">
+            <summary>Handle the incoming request.</summary>
+            <param name="request">Request instance.</param>
+            <param name="ct">Cancellation token.</param>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Abstractions.Messaging.RequestHandlerDelegate`1">
+            <summary>Terminal delegate used to advance the pipeline.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Behaviors.AuthorizationBehavior`2">
+            <summary>Evaluates authorization when the request declares a policy.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Behaviors.AuthorizationBehavior`2.#ctor(Bmf.Api.Boilerplate.Application.Ports.IAuthorizationService,Bmf.Api.Boilerplate.Application.Ports.IUserContext)">
+            <summary>Evaluates authorization when the request declares a policy.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Behaviors.AuthorizationBehavior`2.Handle(`0,Bmf.Api.Boilerplate.Application.Abstractions.Messaging.RequestHandlerDelegate{`1},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Behaviors.IdempotencyBehavior`2">
+            <summary>Guarantees exactly-once semantics for idempotent requests.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Behaviors.IdempotencyBehavior`2.#ctor(Bmf.Api.Boilerplate.Application.Ports.IIdempotencyStore)">
+            <summary>Guarantees exactly-once semantics for idempotent requests.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Behaviors.IdempotencyBehavior`2.Handle(`0,Bmf.Api.Boilerplate.Application.Abstractions.Messaging.RequestHandlerDelegate{`1},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Behaviors.LoggingTracingBehavior`2">
+            <summary>Logs request execution and emits tracing Activity.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Behaviors.LoggingTracingBehavior`2.#ctor(Bmf.Api.Boilerplate.Application.Ports.ILogging{`0},Bmf.Api.Boilerplate.Application.Ports.ICorrelationContext)">
+            <summary>Logs request execution and emits tracing Activity.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Behaviors.TransactionOutboxBehavior`2">
+            <summary>
+            Wraps command handling in a unit-of-work transaction and enqueues any raised domain events to the outbox.
+            Queries pass straight through without a transaction.
+            </summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Behaviors.TransactionOutboxBehavior`2.#ctor(Bmf.Api.Boilerplate.Application.Ports.IUnitOfWork,Bmf.Api.Boilerplate.Application.Ports.IOutbox)">
+            <summary>
+            Wraps command handling in a unit-of-work transaction and enqueues any raised domain events to the outbox.
+            Queries pass straight through without a transaction.
+            </summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Behaviors.TransactionOutboxBehavior`2.Handle(`0,Bmf.Api.Boilerplate.Application.Abstractions.Messaging.RequestHandlerDelegate{`1},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Behaviors.ValidationBehavior`2">
+            <summary>Runs FluentValidation validators before the handler.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Behaviors.ValidationBehavior`2.#ctor(System.Collections.Generic.IEnumerable{FluentValidation.IValidator{`0}})">
+            <summary>Runs FluentValidation validators before the handler.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Behaviors.ValidationBehavior`2.Handle(`0,Bmf.Api.Boilerplate.Application.Abstractions.Messaging.RequestHandlerDelegate{`1},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.DependencyInjection">
+            <summary>Application layer DI registration.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.DependencyInjection.AddApplication(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Reflection.Assembly)">
+            <summary>Adds mediator, behaviors, handlers, and validators to the service collection.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Mediator.IMediator">
+            <summary>Dispatches requests to their handlers through the pipeline.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Mediator.IMediator.Send``1(Bmf.Api.Boilerplate.Application.Abstractions.Messaging.IRequest{``0},System.Threading.CancellationToken)">
+            <summary>Send a request through the pipeline.</summary>
+            <typeparam name="TResponse">Response type.</typeparam>
+            <param name="request">Request instance.</param>
+            <param name="ct">Cancellation token.</param>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Mediator.Mediator">
+            <summary>Simple in-house mediator that resolves handlers and executes the pipeline.</summary>
+            <remarks>Creates a new mediator.</remarks>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Mediator.Mediator.#ctor(System.IServiceProvider)">
+            <summary>Simple in-house mediator that resolves handlers and executes the pipeline.</summary>
+            <remarks>Creates a new mediator.</remarks>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Mediator.Mediator.Send``1(Bmf.Api.Boilerplate.Application.Abstractions.Messaging.IRequest{``0},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Mediator.Mediator.SendCore``2(``0,System.Threading.CancellationToken)">
+            <summary>Strongly-typed execution path: builds the pipeline and calls the handler.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Ports.IAuthorizableRequest">
+            <summary>Marker for requests that require authorization.</summary>
+        </member>
+        <member name="P:Bmf.Api.Boilerplate.Application.Ports.IAuthorizableRequest.Policy">
+            <summary>Named policy to evaluate.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Ports.IAuthorizationService">
+            <summary>Evaluates authorization policies.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Ports.IAuthorizationService.EnsureAuthorizedAsync(Bmf.Api.Boilerplate.Application.Ports.IUserContext,System.String,System.Object,System.Threading.CancellationToken)">
+            <summary>Ensure current user is authorized for the request and policy.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Ports.ICorrelationContext">
+            <summary>Correlation and tracing information.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Ports.IIdempotencyStore">
+            <summary>Manages idempotency keys and results.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Ports.IIdempotencyStore.TryStartAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>Try to start a request scope; returns false if already processed.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Ports.IIdempotencyStore.CompleteAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>Mark the request as completed successfully.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Ports.IIdempotentRequest">
+            <summary>Marker for idempotent requests.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Ports.ILogging`1">
+            <summary>Application logger abstraction (Serilog planned in Infra).</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Ports.IOutbox">
+            <summary>Persists domain events to an outbox for delivery.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Ports.IUnitOfWork">
+            <summary>Transaction and domain-events boundary.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Ports.IUnitOfWork.CollectDomainEvents">
+            <summary>Collect domain events accumulated during the unit of work.</summary>
+        </member>
+        <member name="M:Bmf.Api.Boilerplate.Application.Ports.IUnitOfWork.ClearDomainEvents">
+            <summary>Clear domain events after enqueuing.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Ports.IUserContext">
+            <summary>Represents the current user principal.</summary>
+        </member>
+        <member name="P:Bmf.Api.Boilerplate.Application.Ports.IUserContext.UserId">
+            <summary>User identifier.</summary>
+        </member>
+        <member name="P:Bmf.Api.Boilerplate.Application.Ports.IUserContext.IsAuthenticated">
+            <summary>True if the user is authenticated.</summary>
+        </member>
     </members>
 </doc>

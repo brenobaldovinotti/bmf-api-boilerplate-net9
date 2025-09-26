@@ -4,5 +4,11 @@
         <name>Bmf.Api.Boilerplate.Application.Tests</name>
     </assembly>
     <members>
+        <member name="T:Bmf.Api.Boilerplate.Application.Tests.Behaviors.BehaviorOrderTests">
+            <summary>Verifies the pipeline execution order and side-effects.</summary>
+        </member>
+        <member name="T:Bmf.Api.Boilerplate.Application.Tests.Fakes.FakeUnitOfWork">
+            <summary>Fake UoW that records calls and holds in-memory domain events.</summary>
+        </member>
     </members>
 </doc>
