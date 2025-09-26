@@ -4,45 +4,55 @@ using System.Reflection;
 
 namespace Bmf.Api.Boilerplate.Application.Mediator;
 
-/// <summary>
-/// Minimal mediator that resolves the matching handler and composes registered pipeline behaviors in registration order.
-/// </summary>
+/// <summary>Simple in-house mediator that resolves handlers and executes the pipeline.</summary>
+/// <remarks>Creates a new mediator.</remarks>
 public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
 {
+    private static readonly MethodInfo _sendCoreMethod =
+        typeof(Mediator).GetMethod(nameof(SendCore), BindingFlags.Instance | BindingFlags.NonPublic)
+        ?? throw new InvalidOperationException("SendCore method not found.");
+
+    private readonly IServiceProvider _sp = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+
     /// <inheritdoc />
     public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken ct = default)
     {
-        Type requestType = request.GetType();
-        Type handlerInterfaceType = typeof(IRequestHandler<,>).MakeGenericType(requestType, typeof(TResponse));
-        object handler = serviceProvider.GetRequiredService(handlerInterfaceType);
-
-        Task<TResponse> terminal()
+        if (request is not null)
         {
-            MethodInfo? handleMethod = handlerInterfaceType.GetMethod(nameof(IRequestHandler<IRequest<TResponse>, TResponse>.Handle)) ??
-                throw new MissingMethodException(handlerInterfaceType.FullName, "Handle");
+            // Use reflection only to jump into a strongly-typed generic method.
+            MethodInfo closed = _sendCoreMethod.MakeGenericMethod(request.GetType(), typeof(TResponse));
+            object? result = closed.Invoke(this, [request, ct]);
 
-            object? result = handleMethod.Invoke(handler, [request, ct]);
+            // Invoke returns Task<TResponse>; no exceptions from the handler should be wrapped,
+            // because they're thrown after we await inside SendCore (not during reflection).
             return (Task<TResponse>)result!;
         }
 
-        Type behaviorType = typeof(IPipelineBehavior<,>).MakeGenericType(requestType, typeof(TResponse));
-        IEnumerable<object> behaviors = serviceProvider.GetServices(behaviorType).Where(b => b != null)!;
+        throw new ArgumentNullException(nameof(request));
+    }
 
-        RequestHandlerDelegate<TResponse> next = terminal;
+    /// <summary>Strongly-typed execution path: builds the pipeline and calls the handler.</summary>
+    private async Task<TResponse> SendCore<TRequest, TResponse>(TRequest request, CancellationToken ct)
+        where TRequest : IRequest<TResponse>
+    {
+        // Resolve the handler and behaviors with the correct closed generic types.
+        IRequestHandler<TRequest, TResponse> handler =
+            _sp.GetRequiredService<IRequestHandler<TRequest, TResponse>>();
 
-        foreach (object behavior in behaviors.Reverse())
+        IEnumerable<IPipelineBehavior<TRequest, TResponse>> behaviors =
+            _sp.GetServices<IPipelineBehavior<TRequest, TResponse>>();
+
+        // Terminal delegate invokes the handler directly (no reflection here).
+        Task<TResponse> terminal()
         {
-            MethodInfo? handle = behaviorType.GetMethod(nameof(IPipelineBehavior<IRequest<TResponse>, TResponse>.Handle)) ??
-                throw new MissingMethodException(behaviorType.FullName, "Handle");
-
-            RequestHandlerDelegate<TResponse> capturedNext = next;
-            next = () =>
-            {
-                object? invokeResult = handle.Invoke(behavior, [request, capturedNext, ct]);
-                return (Task<TResponse>)invokeResult!;
-            };
+            return handler.Handle(request, ct);
         }
 
-        return next();
+        // Build outer → inner chain based on registration order.
+        RequestHandlerDelegate<TResponse> pipeline = behaviors
+            .Reverse()
+            .Aggregate((RequestHandlerDelegate<TResponse>)terminal, (next, behavior) => () => behavior.Handle(request, next, ct));
+
+        return await pipeline().ConfigureAwait(false);
     }
 }

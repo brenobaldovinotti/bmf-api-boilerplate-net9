@@ -3,49 +3,52 @@ using Bmf.Api.Boilerplate.Domain.Primitives;
 
 namespace Bmf.Api.Boilerplate.Application.Tests.Fakes;
 
+/// <summary>Fake UoW that records calls and holds in-memory domain events.</summary>
 public sealed class FakeUnitOfWork : IUnitOfWork
 {
-    public List<string> Calls { get; } = [];
-    private readonly List<IDomainEvent> _events = [];
+    private readonly List<string> _calls = [];
+
+    public IReadOnlyList<string> Calls => _calls;
+    public List<IDomainEvent> DomainEvents { get; } = [];
 
     public Task BeginAsync(CancellationToken ct)
     {
-        Calls.Add("begin");
+        _calls.Add("begin");
         return Task.CompletedTask;
     }
 
     public Task SaveChangesAsync(CancellationToken ct)
     {
-        Calls.Add("save");
+        _calls.Add("save");
         return Task.CompletedTask;
     }
 
     public Task CommitAsync(CancellationToken ct)
     {
-        Calls.Add("commit");
+        _calls.Add("commit");
         return Task.CompletedTask;
     }
 
     public Task RollbackAsync(CancellationToken ct)
     {
-        Calls.Add("rollback");
+        _calls.Add("rollback");
         return Task.CompletedTask;
     }
 
     public IReadOnlyCollection<IDomainEvent> CollectDomainEvents()
     {
-        Calls.Add("collect");
-        return _events.ToList();
-    }
-
-    public void ClearDomainEvents()
-    {
-        Calls.Add("clear");
-        _events.Clear();
+        _calls.Add("collect");
+        return DomainEvents.AsReadOnly();
     }
 
     public void AddEvent(IDomainEvent e)
     {
-        _events.Add(e);
+        DomainEvents.Add(e);
+    }
+
+    public void ClearDomainEvents()
+    {
+        _calls.Add("clear");
+        DomainEvents.Clear();
     }
 }
